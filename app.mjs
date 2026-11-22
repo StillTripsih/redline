@@ -1,10 +1,10 @@
-import {createSoundEngine} from './audio.mjs?v=3.8.0';
-import {healthOptions,healthPlan,beginHealth,healthAlarms} from './health.mjs?v=3.8.0';
-import {drawDayDials,ringReadout,updateRingPosition} from './day-dials.mjs?v=3.8.0';
-import {breakOptions,soundOptions} from './settings.mjs?v=3.8.0';
-import {dialClock} from './statistics.mjs?v=3.8.0';
-import {mountPanels} from './panels.mjs?v=3.8.0';
-import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day,beginGoal,goalElapsed,pauseGoal,resetGoal,lapGoal} from './core.mjs?v=3.8.0';
+import {createSoundEngine} from './audio.mjs?v=3.9.0';
+import {healthOptions,healthPlan,beginHealth,healthAlarms} from './health.mjs?v=3.9.0';
+import {drawDayDials,ringReadout,updateRingPosition} from './day-dials.mjs?v=3.9.0';
+import {breakOptions,soundOptions} from './settings.mjs?v=3.9.0';
+import {dialClock} from './statistics.mjs?v=3.9.0';
+import {mountPanels} from './panels.mjs?v=3.9.0';
+import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day,beginGoal,goalElapsed,pauseGoal,resetGoal,lapGoal} from './core.mjs?v=3.9.0';
 const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
 const paths={pause:'M8 5v14M16 5v14',workout:'M3 8v8M6 6v12M18 6v12M21 8v8M6 12h12',walk:'M13 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4M11 8l-3 5H4M11 8l4 4h5M12 12l-3 9M14 14l4 7M11 8l3-1',think:'M9 3C5 2 3 7 5 10c-4 4 0 9 4 8v3M15 3c4-1 6 4 4 7 4 4 0 9-4 8v3M12 3v18M8 8l4 2 4-2M7 15l5-2 5 2',toilet:'M8 3h8v7H8zM6 10h13v3a6 6 0 0 1-6 6H9l-2 3h9M6 7H4v6h3',water:'M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13M9 15a3 3 0 0 0 3 3',tea:'M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 9h2a3 3 0 0 1 0 6h-2M7 3v2M12 2v3M3 22h16',rest:'M3 6v15M3 16h18v5M3 10h5v6M8 12h10a3 3 0 0 1 3 3v1',call:'M5 3l4 4-2 3a14 14 0 0 0 7 7l3-2 4 4-2 3C9 22 2 15 2 5z',sound:'M3 9h4l5-4v14l-5-4H3zM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14'};
 paths.eyes='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0';
@@ -16,7 +16,7 @@ let raw=null,bad=false,s;try{raw=localStorage.getItem(STORAGE_KEY);s=decode(raw)
 if(!s.lastMove)s.lastMove=Date.now();
 let toastTimer,audio=null,previousFocus=null;
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500)}
-function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_38'))localStorage.setItem('redline_v3_before_38',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
+function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_39'))localStorage.setItem('redline_v3_before_39',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
 function writable(){if(bad){toast('Сохранённые данные не прочитаны. Они не удалены.');return false}return true}
 const audioEngine=createSoundEngine({get:()=>soundOptions(s),readPending:()=>s.pendingSounds||[],writePending:items=>{s.pendingSounds=items;save()},status:toast});
 function unlock(force=false){return audioEngine.unlock(force)}
@@ -61,7 +61,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){unlock();
 function applyTheme(){const theme=s.theme||{},valid=c=>/^#[0-9a-f]{6}$/i.test(c);document.documentElement.style.setProperty('--r',valid(theme.accent)?theme.accent:'#ff3545');document.documentElement.style.setProperty('--b',valid(theme.background)?theme.background:'#09090b');const c=(theme.background||'#09090b').slice(1),lum=parseInt(c.slice(0,2),16)*.2126+parseInt(c.slice(2,4),16)*.7152+parseInt(c.slice(4,6),16)*.0722;document.documentElement.style.setProperty('--ink',lum>155?'#15151b':'#f5f5f5');document.querySelector('meta[name="theme-color"]').content=valid(theme.background)?theme.background:'#09090b'}
 function updateDial(now){if(!$('main-page').hidden)drawDayDials(s,now,startHealth)}
 $('settings').innerHTML=icon('settings');$('stats').innerHTML=icon('stats');applyTheme();
-mountPanels({get:()=>s,put:next=>{if(!writable())return false;s=next;const ok=save();applyTheme();drawReasons();render();return ok},title,icon,toast,preview:(kind,config)=>audioEngine.test(kind,config),openHours:()=>$('hours').click()});
+mountPanels({get:()=>s,put:next=>{if(!writable())return false;s=next;const ok=save();applyTheme();drawReasons();render();return ok},title,icon,toast,preview:(kind,config)=>audioEngine.test(kind,config),previewAuto:config=>audioEngine.testAutomatic(config),openHours:()=>$('hours').click()});
 window.addEventListener('focus',()=>{unlock();tick();audioEngine.flush()});window.addEventListener('pageshow',tick);
 
 setInterval(()=>{if(!document.hidden&&!$('main-page').hidden)updateRingPosition(Date.now())},250);
@@ -69,6 +69,6 @@ setInterval(()=>{if(!document.hidden&&!$('main-page').hidden)updateRingPosition(
 let goalMode='countdown';
 for(const [id,count] of [['goal-hours',25],['goal-minutes',60],['goal-seconds',60]]){const wheel=$(id);wheel.innerHTML=Array.from({length:count},(_,n)=>'<div role="option" aria-selected="false" data-value="'+n+'">'+pad(n)+'</div>').join('');const select=()=>{const value=Math.max(0,Math.min(count-1,Math.round(wheel.scrollTop/44)));for(const item of wheel.children)item.setAttribute('aria-selected',String(+item.dataset.value===value))};wheel.addEventListener('scroll',select,{passive:true});wheel.onkeydown=e=>{if(!['ArrowUp','ArrowDown','Home','End'].includes(e.key))return;e.preventDefault();const n=Math.round(wheel.scrollTop/44),value=e.key==='Home'?0:e.key==='End'?count-1:Math.max(0,Math.min(count-1,n+(e.key==='ArrowDown'?1:-1)));wheel.scrollTo({top:value*44,behavior:'smooth'})}}
 function configureGoal(mode){if(!writable())return;if(s.active||s.quick)return toast('Сначала завершите текущий таймер');goalMode=mode;const seconds=s.quickPreferences?.[mode]??(mode==='elapsed'?600:300);$('goal-title').textContent=mode==='elapsed'?'Секундомер · тренировка':'Таймер';$('goal-help').textContent=mode==='elapsed'?'Считает вверх. Цель — необязательный звуковой сигнал. Во время тренировки доступны пауза, продолжение, сброс и круги.':'Выберите точное время обратного отсчёта.';$('goal-option').hidden=mode!=='elapsed';$('goal-enabled').checked=seconds>0;openModal('goal-modal');requestAnimationFrame(()=>{for(const [id,value] of [['goal-hours',Math.floor(seconds/3600)],['goal-minutes',Math.floor(seconds/60)%60],['goal-seconds',seconds%60]]){$(id).scrollTop=value*44;selectWheel($(id),value)}})}
-$('custom-timer').innerHTML=icon('timer');$('custom-stopwatch').innerHTML=icon('stopwatch');$('custom-timer').onclick=()=>configureGoal('countdown');$('custom-stopwatch').onclick=()=>configureGoal('elapsed');
+$('custom-timer').innerHTML=icon('timer');$('custom-stopwatch').innerHTML=icon('stopwatch');$('custom-timer').onclick=()=>configureGoal('countdown');$('custom-stopwatch').onclick=()=>{if(!writable())return;try{unlock(true);s=beginGoal(s,'elapsed',0);save();sound('start');render()}catch(e){toast(e.message)}};
 $('start-goal').onclick=()=>{try{if(!writable())return;const seconds=Math.round($('goal-hours').scrollTop/44)*3600+Math.round($('goal-minutes').scrollTop/44)*60+Math.round($('goal-seconds').scrollTop/44),target=goalMode==='elapsed'&&!$('goal-enabled').checked?0:seconds;if(goalMode==='elapsed'&&$('goal-enabled').checked&&target===0)throw Error('Для сигнала выберите время больше нуля');unlock(true);s=beginGoal(s,goalMode,target);s.quickPreferences={...s.quickPreferences,[goalMode]:target};save();closeModal();sound('start');render()}catch(e){toast(e.message)}};
 for(const [id,change] of [['stopwatch-pause',pauseGoal],['stopwatch-reset',resetGoal],['stopwatch-lap',lapGoal]])$(id).onclick=()=>{if(!writable())return;try{audioEngine.cancelEnd();s=change(s);save();render()}catch(e){toast(e.message)}};
