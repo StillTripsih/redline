@@ -1,10 +1,10 @@
-import {createSoundEngine} from './audio.mjs?v=4.0.0';
-import {healthOptions,healthPlan,beginHealth,healthAlarms} from './health.mjs?v=4.0.0';
-import {drawDayDials,ringReadout,updateRingPosition} from './day-dials.mjs?v=4.0.0';
-import {breakOptions,soundOptions,applySoundDefaults} from './settings.mjs?v=4.0.0';
-import {dialClock} from './statistics.mjs?v=4.0.0';
-import {mountPanels} from './panels.mjs?v=4.0.0';
-import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day,beginGoal,goalElapsed,pauseGoal,resetGoal,lapGoal,pauseTimer} from './core.mjs?v=4.0.0';
+import {createSoundEngine} from './audio.mjs?v=4.1.0';
+import {healthOptions,healthPlan,beginHealth,healthAlarms,nextEvent} from './health.mjs?v=4.1.0';
+import {drawDayDials,ringReadout,updateRingPosition} from './day-dials.mjs?v=4.1.0';
+import {breakOptions,soundOptions,applySoundDefaults} from './settings.mjs?v=4.1.0';
+import {dialClock} from './statistics.mjs?v=4.1.0';
+import {mountPanels} from './panels.mjs?v=4.1.0';
+import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day,beginGoal,goalElapsed,pauseGoal,resetGoal,lapGoal,pauseTimer} from './core.mjs?v=4.1.0';
 const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
 const paths={pause:'M8 5v14M16 5v14',workout:'M3 8v8M6 6v12M18 6v12M21 8v8M6 12h12',walk:'M13 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4M11 8l-3 5H4M11 8l4 4h5M12 12l-3 9M14 14l4 7M11 8l3-1',think:'M9 3C5 2 3 7 5 10c-4 4 0 9 4 8v3M15 3c4-1 6 4 4 7 4 4 0 9-4 8v3M12 3v18M8 8l4 2 4-2M7 15l5-2 5 2',toilet:'M8 3h8v7H8zM6 10h13v3a6 6 0 0 1-6 6H9l-2 3h9M6 7H4v6h3',water:'M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13M9 15a3 3 0 0 0 3 3',tea:'M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 9h2a3 3 0 0 1 0 6h-2M7 3v2M12 2v3M3 22h16',rest:'M3 6v15M3 16h18v5M3 10h5v6M8 12h10a3 3 0 0 1 3 3v1',call:'M5 3l4 4-2 3a14 14 0 0 0 7 7l3-2 4 4-2 3C9 22 2 15 2 5z',sound:'M3 9h4l5-4v14l-5-4H3zM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14'};
 paths.eyes='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0';
@@ -17,7 +17,7 @@ s=applySoundDefaults(s);
 if(!s.lastMove)s.lastMove=Date.now();
 let toastTimer,audio=null,previousFocus=null;
 function toast(text){if(!/не удалось|проверь|выберите|сначала|не больше|не прочит|ошиб|блокир/i.test(text))return;const target=document.querySelector('.modal:not([hidden]) .sheet')||document.querySelector('.subpage:not([hidden])')||$('main-page');let note=target.querySelector('.inline-error');if(!note){note=document.createElement('p');note.className='inline-error';note.setAttribute('role','alert');target.append(note)}note.textContent=text}
-function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_310'))localStorage.setItem('redline_v3_before_39',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
+function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_41'))localStorage.setItem('redline_v3_before_39',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
 function writable(){if(bad){toast('Сохранённые данные не прочитаны. Они не удалены.');return false}return true}
 const audioEngine=createSoundEngine({get:()=>soundOptions(s),readPending:()=>s.pendingSounds||[],writePending:items=>{s.pendingSounds=items;save()},status:toast});
 function unlock(force=false){audioEngine.prime();return audioEngine.unlock(force)}
@@ -34,7 +34,7 @@ function stop(ok){if(!writable())return;const active=s.active||s.quick,oldAnchor
 const title=timer=>timer.reasonLabel|| (timer.reason?REASONS.find(r=>r[0]===timer.reason)?.[1]||'Перерыв':({break:'Перерыв',workout:'Зарядка',walk:'Отойти'})[timer.type]||'Таймер');
 function clock(now){return new Date(now).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',hour12:false})}
 function dot(t,a,b,cls){const angle=dialClock(t,t).angle*Math.PI/180-Math.PI/2;return '<circle class="dot '+cls+'" cx="'+(150+136*Math.cos(angle)).toFixed(2)+'" cy="'+(150+136*Math.sin(angle)).toFixed(2)+'" r="5"/>'}
-function render(){const run=s.active||s.quick,x=schedule(s),n=run?.pausedAt??x.n,planned=healthPlan(s,n).find(p=>p.due>=n&&p.due<x.b);if(planned&&x.inDay)x.next=planned.overdue?planned.scheduled:planned.due;let progress=Math.max(0,Math.min(1,(n-x.a)/(x.b-x.a))),label,time,note='';
+function render(){const upcoming=nextEvent(s,Date.now());$('next-event-name').textContent=upcoming?.label||'Нет событий';$('next-event-time').textContent=upcoming?ringReadout(upcoming.due-Date.now()).main:'—';$('next-event-clock').textContent=upcoming?clock(upcoming.due):'';const run=s.active||s.quick,x=schedule(s),n=run?.pausedAt??x.n,planned=healthPlan(s,n).find(p=>p.due>=n&&p.due<x.b);if(planned&&x.inDay)x.next=planned.overdue?planned.scheduled:planned.due;let progress=Math.max(0,Math.min(1,(n-x.a)/(x.b-x.a))),label,time,note='';
 if(s.active){const elapsed=s.active.type==='walk'||s.active.mode==='elapsed';label=title(s.active).toUpperCase();time=elapsed?stopwatch(n-s.active.start):countdown(s.active.end-n);note='';progress=elapsed?((n-s.active.start)%300000)/300000:Math.max(0,Math.min(1,(n-s.active.start)/(s.active.end-s.active.start)))}
 else if(s.quick){label=s.quick.mode==='elapsed'?(s.quick.pausedAt!=null?'СЕКУНДОМЕР · ПАУЗА':'СЕКУНДОМЕР'):'ТАЙМЕР';time=countdown(s.quick.end-n);progress=Math.max(0,Math.min(1,(n-s.quick.start)/(s.quick.end-s.quick.start)))}
 else if(n<x.a||n>=x.b){label='ДО НАЧАЛА';time=hoursMinutes(x.upcoming-n)}
