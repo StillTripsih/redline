@@ -1,10 +1,10 @@
-import {createSoundEngine} from './audio.mjs?v=3.5.0';
-import {healthOptions,healthPlan,beginHealth,healthAlarms} from './health.mjs?v=3.5.0';
-import {drawDayDials} from './day-dials.mjs?v=3.5.0';
-import {breakOptions,soundOptions} from './settings.mjs?v=3.5.0';
-import {dialClock} from './statistics.mjs?v=3.5.0';
-import {mountPanels} from './panels.mjs?v=3.5.0';
-import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day} from './core.mjs?v=3.5.0';
+import {createSoundEngine} from './audio.mjs?v=3.6.0';
+import {healthOptions,healthPlan,beginHealth,healthAlarms} from './health.mjs?v=3.6.0';
+import {drawDayDials,ringReadout,updateRingPosition} from './day-dials.mjs?v=3.6.0';
+import {breakOptions,soundOptions} from './settings.mjs?v=3.6.0';
+import {dialClock} from './statistics.mjs?v=3.6.0';
+import {mountPanels} from './panels.mjs?v=3.6.0';
+import {STORAGE_KEY,DEFAULTS,REASONS,decode,schedule,hoursMinutes,stopwatch,countdown,begin,beginQuick,finish,alarmEvents,validTime,day} from './core.mjs?v=3.6.0';
 const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
 const paths={pause:'M8 5v14M16 5v14',workout:'M3 8v8M6 6v12M18 6v12M21 8v8M6 12h12',walk:'M13 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4M11 8l-3 5H4M11 8l4 4h5M12 12l-3 9M14 14l4 7M11 8l3-1',think:'M9 3C5 2 3 7 5 10c-4 4 0 9 4 8v3M15 3c4-1 6 4 4 7 4 4 0 9-4 8v3M12 3v18M8 8l4 2 4-2M7 15l5-2 5 2',toilet:'M8 3h8v7H8zM6 10h13v3a6 6 0 0 1-6 6H9l-2 3h9M6 7H4v6h3',water:'M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13M9 15a3 3 0 0 0 3 3',tea:'M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 9h2a3 3 0 0 1 0 6h-2M7 3v2M12 2v3M3 22h16',rest:'M3 6v15M3 16h18v5M3 10h5v6M8 12h10a3 3 0 0 1 3 3v1',call:'M5 3l4 4-2 3a14 14 0 0 0 7 7l3-2 4 4-2 3C9 22 2 15 2 5z',sound:'M3 9h4l5-4v14l-5-4H3zM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14'};
 paths.eyes='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0';
@@ -14,7 +14,7 @@ let raw=null,bad=false,s;try{raw=localStorage.getItem(STORAGE_KEY);s=decode(raw)
 if(!s.lastMove)s.lastMove=Date.now();
 let toastTimer,audio=null,previousFocus=null;
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500)}
-function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_35'))localStorage.setItem('redline_v3_before_35',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
+function save(){if(bad)return false;try{if(raw&&!localStorage.getItem('redline_v3_before_36'))localStorage.setItem('redline_v3_before_36',raw);localStorage.setItem(STORAGE_KEY,JSON.stringify(s));return true}catch{toast('Не удалось сохранить данные. Не закрывайте приложение.');return false}}
 function writable(){if(bad){toast('Сохранённые данные не прочитаны. Они не удалены.');return false}return true}
 const audioEngine=createSoundEngine({get:()=>soundOptions(s),readPending:()=>s.pendingSounds||[],writePending:items=>{s.pendingSounds=items;save()},status:toast});
 function unlock(force=false){return audioEngine.unlock(force)}
@@ -37,7 +37,7 @@ else if(s.quick){label='ТАЙМЕР';time=countdown(s.quick.end-n);progress=Mat
 else if(n<x.a||n>=x.b){label='ДО НАЧАЛА';time=hoursMinutes(x.upcoming-n)}
 else if(x.next>=x.b){label='ДО КОНЦА';time=hoursMinutes(x.b-n)}
 else{label=x.next<=n?'ПОРА ОТДОХНУТЬ':'ДО ПЕРЕРЫВА';time=(x.next<=n?'+':'')+hoursMinutes(Math.abs(x.next-n));note=x.next<=n?(planned?.label||'ОПОЗДАНИЕ'):(planned?.label?planned.label+' · ':'')+clock(x.next)}
-$('today').textContent=new Date(n).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'long'});$('now').textContent=clock(n);$('label').textContent=label;$('time').textContent=time;$('time').classList.toggle('over',!run&&x.inDay&&x.next<=n&&x.next<x.b);$('time').classList.toggle('long',time.length>5);$('note').textContent=note;$('hours').textContent=s.start+' — '+s.end;$('sound').setAttribute('aria-pressed',String(s.sound!==false));
+$('today').textContent=new Date(n).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'long'});$('now').textContent=clock(n);$('label').textContent=label;const elapsed=!!s.active&&(s.active.type==='walk'||s.active.mode==='elapsed'),ms=s.active?(elapsed?n-s.active.start:Math.max(0,s.active.end-n)):s.quick?Math.max(0,s.quick.end-n):(n<x.a||n>=x.b)?x.upcoming-n:x.next>=x.b?x.b-n:Math.abs(x.next-n),readout=ringReadout(ms,!run&&x.inDay&&x.next<n&&x.next<x.b);time=readout.main;$('time').textContent=time;$('seconds').textContent=readout.seconds;const face=$('single-dial');face.classList.toggle('is-session',!!run);$('main-page').classList.toggle('has-session',!!run);face.classList.toggle('is-away',elapsed);face.classList.toggle('is-workout',s.active?.type==='workout');$('session-icon').innerHTML=run?icon(elapsed?'walk':s.active?.type==='workout'?'workout':'pause'):'';$('session-progress').hidden=!run;if(run)$('session-progress').firstElementChild.style.width=(elapsed?((n-run.start)%300000)/3000:Math.max(0,Math.min(100,(n-run.start)/(run.end-run.start)*100)))+'%';$('time').classList.toggle('over',!run&&x.inDay&&x.next<=n&&x.next<x.b);$('time').classList.toggle('long',time.length>5);$('note').textContent=note;$('hours').textContent=s.start+' — '+s.end;$('sound').setAttribute('aria-pressed',String(s.sound!==false));
 updateDial(n);$('timer-controls').hidden=!run;for(const b of document.querySelectorAll('.round-action,.preset'))b.disabled=!!run}
 function tick(){if(!bad){const result=alarmEvents(s);const wellness=healthAlarms(result.state);result.state=wellness.state;result.events=result.events.filter(e=>!['break','stand','pose'].includes(e));for(const id of wellness.events)result.events.push(id==='move'?'stand':id==='eyes'?'pose':'water');if(result.events.length){s=result.state;save();const event=['end','stand','water','work','pose','five'].find(kind=>result.events.includes(kind));sound(event);const messages={stand:'Пора встать и пройтись',pose:'Глазам нужен короткий отдых вдаль',water:'Напоминание выпить воды',five:'Пауза: ещё '+(s.reminderMinutes||5)+' мин',end:'Время таймера вышло',break:'Пора сделать перерыв',work:'Начало рабочего времени'};if(messages[event])toast(messages[event])}else s=result.state}render()}
 $('pause').innerHTML=icon('pause');$('workout').innerHTML=icon('workout');$('walk').innerHTML=icon('walk');$('sound').innerHTML=icon('sound');
@@ -63,3 +63,5 @@ function updateDial(now){if(!$('main-page').hidden)drawDayDials(s,now,startHealt
 $('settings').innerHTML=icon('settings');$('stats').innerHTML=icon('stats');applyTheme();
 mountPanels({get:()=>s,put:next=>{if(!writable())return false;s=next;const ok=save();applyTheme();drawReasons();render();return ok},title,icon,toast,preview:async(kind,config)=>{await unlock(true);return sound(kind,config,true)},openHours:()=>$('hours').click()});
 window.addEventListener('focus',()=>{unlock();tick();audioEngine.flush()});window.addEventListener('pageshow',tick);
+
+setInterval(()=>{if(!document.hidden&&!$('main-page').hidden)updateRingPosition(Date.now())},250);

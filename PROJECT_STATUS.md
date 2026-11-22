@@ -31,3 +31,12 @@
 - Личный API для Gemini, OpenAI или совместимого endpoint. Тест подключения до сохранения, отдельное хранение ключа. AI получает только сводку и явно введённые цели по нажатию. Проверяемые предложения настроек применяются отдельной кнопкой; неизвестные поля/изменения истории запрещены. Нет обещания поддержки любого протокола или CORS.
 - Проверено: 31 тест, синтаксис модулей. Тесты AI/звука имитируют API и AudioContext; реальные ключи не использовались. Телефон, слышимость, жесты и фон не проверены под существующим запретом браузерных проверок.
 - Ключ данных redline_v3 и адрес неизменны; дополнительная копия before_35, предыдущие копии сохранены. Другие проекты не менялись.
+
+RedLine 3.5 размещён: 87e6eb47d842372a890263231f2824ef32bbce09; Pages run 45009247093 успешен. HTML, CSS и все 9 модулей HTTP 200 и совпадают с проверенными локальными файлами. Реальный провайдер с личным ключом, браузерный интерфейс и слышимость на телефоне не проверялись.
+
+## 2026-11-22 — версия 3.6
+
+- Replaced two side-by-side faces with one full-width face and two concentric rings. Current half sits outside with typed icons, inactive half is dimmed inside with dots. Swaps at noon/midnight; work arcs remain visible.
+- Timer/countdown is centred in the face for all modes. Secondary live seconds and timestamp-derived values recover after tab suspension. Current-position marker refreshes at 250 ms; active pause, exercise and elapsed-away modes have distinct icon/colour/background/progress. Disabled extra start actions are hidden during an active timer.
+- Settings are collapsed categories with backgrounds. Identity/update moved to the top. API form reduced to key + Google key link + verification; existing working connections are preserved. Advice/commands remain in an expandable section.
+- Origin, storage key and history remain unchanged; before_36 snapshot added. Checked: 33 tests and module syntax; real phone UI/audio/API remain unverified under the existing browser-testing restriction.
