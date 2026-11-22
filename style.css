@@ -71,3 +71,17 @@ html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscro
 .session-progress{position:absolute;inset:0;width:100%;height:100%;margin:0;overflow:visible;transform:rotate(-90deg);pointer-events:none;z-index:0;background:none}.session-progress circle{fill:none;stroke:var(--r);stroke-width:2}.session-progress .session-track{opacity:.22}.session-progress .session-fill{stroke-dasharray:0 100;stroke-linecap:round;transition:stroke-dasharray .25s linear}.single-center>div{position:relative;z-index:1}
 .is-session .note{display:none}.sound-test{width:100%;min-height:48px;border:1px solid var(--r);border-radius:18px;background:var(--s);color:var(--ink);font:inherit}.sound-diagnostic{font-size:12px;line-height:1.6;color:var(--m);padding:10px 0;overflow-wrap:anywhere}
 @media(max-height:650px){#main-page .round-action{width:54px;height:54px;padding:14px}#main-page .preset{width:44px;height:44px;font-size:15px}#main-page .single-dial{width:min(100%,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 250px))}#main-page .actions{margin:4px auto 8px}}
+
+/* 3.8: fixed dial stage and one continuous 24-hour spiral. */
+#main-page{display:grid;grid-template-rows:42px 44px minmax(0,1fr) 52px 94px;gap:0}
+#main-page .day-hours-row{margin:0}.dial-stage{min-height:0;display:flex;justify-content:center;align-items:center;container-type:size;overflow:visible}
+#main-page .single-dial,#main-page.has-session .single-dial{width:min(100%,100cqh);max-width:480px;flex:none;margin:0;aspect-ratio:1}
+.spiral-track{fill:none;stroke:var(--r);stroke-width:2}.spiral-work{fill:none;stroke:var(--r);stroke-width:8;stroke-linecap:round}.spiral-tick{fill:var(--ink)}.day-spiral .ring-hour{font-size:8px;fill:var(--m)}
+.is-session #main-dial-svg .spiral-track,.is-session #main-dial-svg .spiral-work{stroke:#73737a}.is-session #main-dial-svg{opacity:.25}.is-session #main-dial-svg .health-marker{pointer-events:none}
+.home-controls{display:grid;grid-template-areas:'controls';align-items:center;min-width:0}.home-controls>.actions,.home-controls>.timer-controls{grid-area:controls;width:100%;margin:0!important}
+#main-page.has-session .actions{display:flex;visibility:hidden;pointer-events:none}.home-controls>.timer-controls{gap:8px;justify-content:space-evenly}.home-controls .round-control{width:54px;height:54px}.home-controls .round-control>span{font-size:25px}.home-controls .round-control small{font-size:8px}
+.quick-tools{display:flex;align-items:center;justify-content:center;gap:30px}.quick-tools .icon-button{background:none;border:0;color:var(--r);width:48px;height:48px}.quick-tools button:disabled{opacity:.2;cursor:default}
+.goal-wheels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.goal-wheels label{min-width:0;font-size:11px;color:var(--m)}.goal-wheels .wheel{margin-top:8px}.goal-sheet{max-width:430px}.lap-readout{font-size:9px;color:var(--ink);line-height:1.4}.single-center .lap-readout:empty{display:none}
+@media(max-height:650px){#main-page{grid-template-rows:38px 38px minmax(0,1fr) 44px 70px}.quick-tools .icon-button{width:44px;height:44px}.goal-wheels .wheel{height:176px;padding-block:66px}.goal-wheels .wheel>div{height:44px}}
+
+.home-controls .round-control{width:min(54px,calc((100vw - 72px)/5));height:min(54px,calc((100vw - 72px)/5))}

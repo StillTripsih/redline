@@ -1,4 +1,4 @@
-import {schedule,begin} from './core.mjs?v=3.7.0';
+import {schedule,begin} from './core.mjs?v=3.8.0';
 export const HEALTH_DEFAULTS=[{id:'eyes',label:'Глаза',everyMinutes:20,durationSeconds:20,enabled:true},{id:'move',label:'Разминка',everyMinutes:55,durationSeconds:300,enabled:true},{id:'water',label:'Вода',everyMinutes:60,durationSeconds:60,enabled:true}];
 export function healthOptions(s){return HEALTH_DEFAULTS.map(d=>{const r=s.healthReminders?.find(r=>r.id===d.id);return {...d,everyMinutes:r?.everyMinutes??(d.id==='move'?Math.max(5,Math.min(240,+s.interval||55)):d.everyMinutes),durationSeconds:r?.durationSeconds??(d.id==='move'?Math.max(10,Math.min(3600,(+s.duration||5)*60)):d.durationSeconds),enabled:r?.enabled??d.enabled}})}
 export function validateHealth(rows){if(!Array.isArray(rows)||rows.length!==3||new Set(rows.map(r=>r.id)).size!==3||rows.some(r=>!HEALTH_DEFAULTS.some(d=>d.id===r.id)||typeof r.enabled!=='boolean'||!Number.isInteger(r.everyMinutes)||r.everyMinutes<5||r.everyMinutes>240||!Number.isInteger(r.durationSeconds)||r.durationSeconds<10||r.durationSeconds>3600))throw Error('Проверьте интервалы полезных пауз');return rows}
