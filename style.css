@@ -52,3 +52,22 @@ body{color:var(--ink)}.home-header{justify-content:center;gap:30px}.calendar-dat
 @media(max-height:740px){.single-dial{width:min(100%,66dvh)}.single-center .time{font-size:clamp(27px,8vw,42px)}.health-legend{margin:4px 0}.actions{margin-bottom:18px}}
 
 #main-page.has-session .actions,#main-page.has-session .presets{display:none}
+
+/* 3.7: stable viewport; only explicit content areas scroll. */
+html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
+.app{height:100dvh;min-height:0;width:100%;max-width:510px;overflow-x:hidden;overscroll-behavior:none}
+#main-page{display:flex;flex-direction:column;align-items:stretch;overflow:hidden;touch-action:none;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
+#main-page .home-header,#main-page .day-hours-row,#main-page .health-legend,#main-page .actions,#main-page .presets,#main-page .timer-controls{flex-shrink:0}
+#main-page .day-hours-row{margin:4px 0}
+#main-page .single-dial{flex:0 1 auto;min-height:0;width:min(100%,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 290px));margin:auto;max-width:480px}
+#main-page.has-session .single-dial{width:min(100%,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 230px))}
+#main-page .actions{margin:8px auto 14px;width:100%}#main-page .presets{width:100%}
+.subpage{overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}.modal{overflow:hidden;overscroll-behavior:none}.sheet{overflow-x:hidden;overscroll-behavior:none;touch-action:pan-y}
+.dial-layer .ring-track{stroke:var(--r);stroke-width:2}.dial-layer .ring-work>*{stroke-width:10}.dial-layer.inner .ring-work>*{stroke-width:6}
+.health-marker circle{fill:transparent;stroke:transparent}.health-marker path{stroke-width:2.2}.health-marker:focus-visible circle{stroke:var(--ink);stroke-width:1}
+.health-legend{justify-content:center;gap:20px;margin:2px 0!important}.health-legend button{display:grid;place-items:center;width:40px;height:40px;min-height:40px;color:var(--r)}.health-legend svg{width:19px;height:19px}
+.single-dial.is-session .single-center,.single-dial.is-away .single-center,.single-dial.is-workout .single-center{background:color-mix(in srgb,var(--r) 23%,var(--b));color:var(--ink)}
+.session-progress{position:absolute;inset:0;width:100%;height:100%;margin:0;overflow:visible;transform:rotate(-90deg);pointer-events:none;z-index:0;background:none}.session-progress circle{fill:none;stroke:var(--r);stroke-width:2}.session-progress .session-track{opacity:.22}.session-progress .session-fill{stroke-dasharray:0 100;stroke-linecap:round;transition:stroke-dasharray .25s linear}.single-center>div{position:relative;z-index:1}
+.is-session .note{display:none}.sound-test{width:100%;min-height:48px;border:1px solid var(--r);border-radius:18px;background:var(--s);color:var(--ink);font:inherit}.sound-diagnostic{font-size:12px;line-height:1.6;color:var(--m);padding:10px 0;overflow-wrap:anywhere}
+@media(max-height:650px){#main-page .round-action{width:54px;height:54px;padding:14px}#main-page .preset{width:44px;height:44px;font-size:15px}#main-page .single-dial{width:min(100%,calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 250px))}#main-page .actions{margin:4px auto 8px}}

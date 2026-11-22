@@ -1,4 +1,4 @@
-import {day} from './core.mjs?v=3.6.0';
+import {day} from './core.mjs?v=3.7.0';
 export const ordinal=date=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('Проверьте дату');const n=Date.parse(date+'T00:00:00Z');if(!Number.isFinite(n)||new Date(n).toISOString().slice(0,10)!==date)throw Error('Проверьте дату');return Math.round(n/86400000)};
 export const shiftDay=(date,n)=>new Date((ordinal(date)+n)*86400000).toISOString().slice(0,10);
 export const countDays=(start,end)=>ordinal(end)-ordinal(start)+1;

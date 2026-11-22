@@ -40,3 +40,8 @@ RedLine 3.5 размещён: 87e6eb47d842372a890263231f2824ef32bbce09; Pages ru
 - Timer/countdown is centred in the face for all modes. Secondary live seconds and timestamp-derived values recover after tab suspension. Current-position marker refreshes at 250 ms; active pause, exercise and elapsed-away modes have distinct icon/colour/background/progress. Disabled extra start actions are hidden during an active timer.
 - Settings are collapsed categories with backgrounds. Identity/update moved to the top. API form reduced to key + Google key link + verification; existing working connections are preserved. Advice/commands remain in an expandable section.
 - Origin, storage key and history remain unchanged; before_36 snapshot added. Checked: 33 tests and module syntax; real phone UI/audio/API remain unverified under the existing browser-testing restriction.
+
+Публикация 3.6 подтверждена: commit f1100ebe66b1dca58ea96f5e9c9f373d28713e5c, Pages run 45013246343 — success. Все 11 публичных файлов HTTP 200 и совпадают с локальными по SHA-256. 33 теста пройдены. Интерфейс и звук на настоящем телефоне не проверялись.
+
+## 3.7
+Главный экран закреплён в viewport, настройки прокручиваются только вертикально без полос. Иконки пауз вынесены на внешнюю невидимую орбиту; подпись половин удалена, легенда — три иконки. Прогресс паузы круговой, красный фон. Добавлен WAV-аудиоплеер с Web Audio fallback и явная диагностика, без утверждения о фактической слышимости. Хранилища сохранены; before_37. Телефон не проверялся.
