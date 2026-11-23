@@ -18,3 +18,5 @@ export function toneWave(kind='start',voice='soft'){const frequencies=TONES[kind
 function toneUrl(kind,voice){const bytes=toneWave(kind,voice);let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return 'data:audio/wav;base64,'+btoa(binary)}
 
 export const endSoundId=timer=>'end:'+(timer.id??timer.start)+':'+timer.end;
+
+export const eventAlarmUrl=()=>toneUrl('event','bell');
