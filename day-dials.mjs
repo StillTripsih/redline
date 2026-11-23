@@ -1,5 +1,5 @@
-import {routinePlan} from './routines.mjs?v=4.6.0';
-import {halfDay,healthPlan} from './health.mjs?v=4.6.0';
+import {routinePlan} from './routines.mjs?v=4.7.0';
+import {halfDay,healthPlan} from './health.mjs?v=4.7.0';
 const point=(f,r)=>({x:250+r*Math.sin(f*Math.PI*2),y:250-r*Math.cos(f*Math.PI*2)});
 const paths={water:'M12 3C9 8 6 11 6 15a6 6 0 0 0 12 0c0-4-3-7-6-12',eyes:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0',move:'M3 8v8M6 6v12M18 6v12M21 8v8M6 12h12'};
 export function ringOrder(now){const active=new Date(now).getHours()<12?0:1;return {outer:active,inner:1-active}}
@@ -12,7 +12,7 @@ export function drawDayDials(s,now,onSelect){const svg=document.getElementById('
 export function selectedWindow(s,hour,now=Date.now(),key){const event=key?displaySpiralEvents(s,now).find(e=>e.key===key||e.id===key):null;const startHour=event?hourOf(event.due):Math.max(0,Math.min(23,Math.floor(hour))),endHour=Math.min(24,startHour+(event?Math.max(1/60,(event.durationSeconds||0)/3600):1));return {startHour,endHour,key:event?.key||null,...(event&&new Date(event.due).getDate()!==new Date(now).getDate()?{dayOffset:1}:{})}}
 export function windowEvents(s,window,now=Date.now()){const start=new Date(now);start.setHours(0,0,0,0);if(window.dayOffset)start.setDate(start.getDate()+window.dayOffset);return displaySpiralEvents(s,now).filter(e=>e.due>=+start+window.startHour*3600000&&e.due<+start+window.endHour*3600000)}
 export function eventOpacity(deltaHours){if(deltaHours>=0)return deltaHours>12?0:Math.min(1,(12-deltaHours)/.5);return Math.max(0,1+deltaHours/.5)}
-export function timelineOpacity(hour,now=Date.now()){const current=hourOf(now),delta=hour-current;if(delta<0&&delta+24<=12)return eventOpacity(delta+24);return eventOpacity(delta)}
+export function timelineOpacity(hour,now=Date.now()){const current=hourOf(now),delta=hour-current;if(delta<0&&delta+24<=12)return .32+.68*eventOpacity(delta+24);return .32+.68*eventOpacity(delta)}
 export function displaySpiralEvents(s,now=Date.now()){const tomorrow=new Date(now);tomorrow.setDate(tomorrow.getDate()+1);tomorrow.setHours(0,0,0,0);return [...routinePlan(s,now),...routinePlan(s,+tomorrow)].filter(e=>e.due>=now-.5*3600000&&e.due<=now+12*3600000).sort((a,b)=>a.due-b.due)}
 export function spiralHourAt(x,y){let best=0,distance=Infinity;for(let i=0;i<=2400;i++){const hour=i/100,p=spiralPoint(hour),d=(p.x-x)**2+(p.y-y)**2;if(d<distance){best=hour;distance=d}}return best}
 export function spiralMark(hour,length){const p=spiralPoint(hour),a=spiralPoint(Math.max(0,hour-.001)),b=spiralPoint(Math.min(24,hour+.001)),dx=b.x-a.x,dy=b.y-a.y,n=Math.hypot(dx,dy)||1;return {x1:p.x-dy/n*length/2,y1:p.y+dx/n*length/2,x2:p.x+dy/n*length/2,y2:p.y-dx/n*length/2}}
