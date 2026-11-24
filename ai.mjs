@@ -1,5 +1,5 @@
-import {validateModes} from './routines.mjs?v=5.0.0';
-import {validateSettings,validateSound,breakOptions} from './settings.mjs?v=5.0.0';import {validateHealth,healthOptions} from './health.mjs?v=5.0.0';import {validTime} from './core.mjs?v=5.0.0';
+import {validateModes} from './routines.mjs?v=5.1.0';
+import {validateSettings,validateSound,breakOptions} from './settings.mjs?v=5.1.0';import {validateHealth,healthOptions} from './health.mjs?v=5.1.0';import {validTime} from './core.mjs?v=5.1.0';
 export const CONNECTION_KEY='redline_ai_connection';let current=null;try{current=JSON.parse(localStorage.getItem(CONNECTION_KEY)||'null')}catch{}
 export const getConnection=()=>current;
 export function endpoint(config){if(config.provider==='gemini')return 'https://generativelanguage.googleapis.com/v1beta';if(config.provider==='openai')return 'https://api.openai.com/v1';const url=new URL(config.base);if(url.username||url.password||url.search||url.hash||!(url.protocol==='https:'||url.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(url.hostname)))throw Error('Укажите HTTPS-адрес API без ключа в ссылке');return url.href.replace(/\/$/,'').replace(/\/chat\/completions$/,'')}
