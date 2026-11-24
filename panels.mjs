@@ -1,10 +1,10 @@
-import {exerciseSvg} from './office.mjs?v=5.1.0';
-import {modeTemplate,defaultModes,validateModes,suggestDay,routinePlan,compileModeGoal,prepareTemplate} from './routines.mjs?v=5.1.0';
-import {getConnection,connect,disconnect,askAi,applyAiChanges} from './ai.mjs?v=5.1.0';
-import {healthOptions,validateHealth} from './health.mjs?v=5.1.0';
-import {breakOptions,soundOptions,SOUND_EVENTS,validateSettings,validateSound} from './settings.mjs?v=5.1.0';
-import {statistics,achievements,shiftDay,countDays,moveRange} from './statistics.mjs?v=5.1.0';
-import {day,stopwatch,REASONS,goalElapsed,timers} from './core.mjs?v=5.1.0';
+import {exerciseSvg} from './office.mjs?v=5.2.0';
+import {modeTemplate,defaultModes,validateModes,suggestDay,routinePlan,compileModeGoal,prepareTemplate} from './routines.mjs?v=5.2.0';
+import {getConnection,connect,disconnect,askAi,applyAiChanges} from './ai.mjs?v=5.2.0';
+import {healthOptions,validateHealth} from './health.mjs?v=5.2.0';
+import {breakOptions,soundOptions,SOUND_EVENTS,validateSettings,validateSound} from './settings.mjs?v=5.2.0';
+import {statistics,achievements,shiftDay,countDays,moveRange} from './statistics.mjs?v=5.2.0';
+import {day,stopwatch,REASONS,goalElapsed,timers} from './core.mjs?v=5.2.0';
 const $=id=>document.getElementById(id),el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
 export function mountPanels(api){
 let eventDraft=null;let page='home',soundDraft,settingsDraft,range={start:day(),end:day()},period='1',selected='',lastStats=0,dragged=false;
