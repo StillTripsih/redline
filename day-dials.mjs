@@ -1,6 +1,6 @@
-import {validTime} from './core.mjs?v=6.0.0';
-import {routinePlan} from './routines.mjs?v=6.0.0';
-import {halfDay,healthPlan} from './health.mjs?v=6.0.0';
+import {validTime} from './core.mjs?v=6.1.0';
+import {routinePlan} from './routines.mjs?v=6.1.0';
+import {halfDay,healthPlan} from './health.mjs?v=6.1.0';
 const point=(f,r)=>({x:250+r*Math.sin(f*Math.PI*2),y:250-r*Math.cos(f*Math.PI*2)});
 const paths={water:'M12 3C9 8 6 11 6 15a6 6 0 0 0 12 0c0-4-3-7-6-12',eyes:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0',move:'M3 8v8M6 6v12M18 6v12M21 8v8M6 12h12'};
 export function ringOrder(now){const active=new Date(now).getHours()<12?0:1;return {outer:active,inner:1-active}}

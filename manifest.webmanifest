@@ -1,0 +1,19 @@
+{
+  "id": "/redline/",
+  "name": "RedLine",
+  "short_name": "RedLine",
+  "start_url": "/redline/",
+  "scope": "/redline/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
