@@ -1,4 +1,4 @@
-import {day} from './core.mjs?v=6.1.0';import {dayPlan} from './planner.mjs?v=6.1.0';
+import {day} from './core.mjs?v=6.2.0';import {dayPlan} from './planner.mjs?v=6.2.0';
 export function dateAt(value){if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value))throw Error('Проверьте дату');const d=new Date(value+'T12:00:00');if(!Number.isFinite(+d)||day(d)!==value)throw Error('Проверьте дату');return d}
 export function shiftDate(value,count){const d=dateAt(value);d.setDate(d.getDate()+count);return day(d)}
 export function calendarRange(anchor,view='month'){const d=dateAt(anchor);if(view==='day')return [anchor];if(view==='week'){const offset=(d.getDay()+6)%7;return Array.from({length:7},(_,i)=>shiftDate(anchor,i-offset))}if(view!=='month')throw Error('Неизвестный масштаб');d.setDate(1);const first=day(d),offset=(d.getDay()+6)%7;return Array.from({length:42},(_,i)=>shiftDate(first,i-offset))}

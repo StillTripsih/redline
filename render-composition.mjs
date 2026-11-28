@@ -1,0 +1,1 @@
+import {spiralPoint,spiralMark} from './day-dials.mjs';import {writeFile} from 'node:fs/promises';const g={lanes:[],ticks:[],hand:spiralMark(10.5,66)};for(let h=0;h<24;h+=.025)g.lanes.push({h,...spiralPoint(h)});for(let h=0;h<=24;h++)g.ticks.push({h,...spiralMark(h,14)});await writeFile(new URL('composition-geometry.json',import.meta.url),JSON.stringify(g));

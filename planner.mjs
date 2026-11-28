@@ -1,6 +1,6 @@
-import {day} from './core.mjs?v=6.1.0';
-import {globalScheduleEvents} from './routines.mjs?v=6.1.0';
-import {dayZones} from './day-dials.mjs?v=6.1.0';
+import {day} from './core.mjs?v=6.2.0';
+import {globalScheduleEvents} from './routines.mjs?v=6.2.0';
+import {dayZones} from './day-dials.mjs?v=6.2.0';
 const boundaries=new Set(['work-start','work-end','sleep','wake']);
 export function nextPeriod(s,now=Date.now()){const tomorrow=new Date(now);tomorrow.setDate(tomorrow.getDate()+1);return Array.from({length:8},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()+i);return globalScheduleEvents(s,+d)}).flat().filter(e=>boundaries.has(e.kind)&&e.due>now).sort((a,b)=>a.due-b.due)[0]||null}
 export function nextPause(s,now=Date.now(),movementOnly=false){const tomorrow=new Date(now);tomorrow.setDate(tomorrow.getDate()+1);return [...globalScheduleEvents(s,now),...globalScheduleEvents(s,+tomorrow)].filter(e=>!boundaries.has(e.kind)&&e.kind!=='medicine'&&e.kind!=='meals'&&e.durationSeconds>0&&(!movementOnly||e.officeRoutine||['work','sport','stretch'].includes(e.kind))&&e.due>=now).sort((a,b)=>a.due-b.due)[0]||null}

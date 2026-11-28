@@ -1,4 +1,4 @@
-import {validateActivity} from './companion.mjs?v=6.1.0';
+import {validateActivity} from './companion.mjs?v=6.2.0';
 export const STORAGE_KEY='redline_v3';
 export const DEFAULTS={start:'07:00',end:'14:00',interval:55,duration:5,history:[],anchor:null,active:null,quick:null,sound:true};
 export const REASONS=[['think','Подумать'],['toilet','Туалет'],['water','Вода'],['tea','Чай'],['rest','Прилечь'],['call','Звонок']];
